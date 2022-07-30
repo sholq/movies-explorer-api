@@ -3,7 +3,6 @@ const mongoose = require('mongoose');
 const bodyParser = require('body-parser');
 const rateLimit = require('express-rate-limit');
 const helmet = require('helmet');
-// const { errors, celebrate, Joi } = require('celebrate');
 
 require('dotenv').config();
 
@@ -17,15 +16,13 @@ mongoose.connection.on('error', (err) => console.log('Connection failed with - '
 
 const { usersRouter } = require('./routes/users');
 const { moviesRouter } = require('./routes/movies');
+const { signInRouter } = require('./routes/signin');
+const { signUpRouter } = require('./routes/signup');
 // const { notFoundRouter } = require('./routes/not_found');
 
-// const { createUser, login } = require('./controllers/auth');
-
-// const auth = require('./middlewares/auth');
+const auth = require('./middlewares/auth');
 // const { handleErrors } = require('./middlewares/errors');
 // const cors = require('./middlewares/cors');
-
-// const { urlRegEx } = require('./regex/regex');
 
 const { requestLogger, errorLogger } = require('./middlewares/logger');
 
@@ -47,22 +44,9 @@ app.use((req, res, next) => {
 app.use(requestLogger);
 app.use(limiter);
 // app.use(cors);
-// app.post('/signin', celebrate({
-//   body: Joi.object().keys({
-//     email: Joi.string().required().email(),
-//     password: Joi.string().required().min(8),
-//   }),
-// }), login);
-// app.post('/signup', celebrate({
-//   body: Joi.object().keys({
-//     email: Joi.string().required().email(),
-//     password: Joi.string().required().min(8),
-//     name: Joi.string().min(2).max(30),
-//     about: Joi.string().min(2).max(30),
-//     avatar: Joi.string().regex(urlRegEx),
-//   }),
-// }), createUser);
-// app.use(auth);
+app.use('/signin', signInRouter);
+app.use('/signup', signUpRouter);
+app.use(auth);
 app.use('/users', usersRouter);
 app.use('/movies', moviesRouter);
 // app.use('/', notFoundRouter);
