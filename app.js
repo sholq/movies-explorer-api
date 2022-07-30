@@ -3,6 +3,7 @@ const mongoose = require('mongoose');
 const bodyParser = require('body-parser');
 const rateLimit = require('express-rate-limit');
 const helmet = require('helmet');
+const { errors } = require('celebrate');
 
 require('dotenv').config();
 
@@ -18,10 +19,10 @@ const { usersRouter } = require('./routes/users');
 const { moviesRouter } = require('./routes/movies');
 const { signInRouter } = require('./routes/signin');
 const { signUpRouter } = require('./routes/signup');
-// const { notFoundRouter } = require('./routes/not_found');
+const { notFoundRouter } = require('./routes/not_found');
 
 const auth = require('./middlewares/auth');
-// const { handleErrors } = require('./middlewares/errors');
+const { handleErrors } = require('./middlewares/errors');
 // const cors = require('./middlewares/cors');
 
 const { requestLogger, errorLogger } = require('./middlewares/logger');
@@ -49,10 +50,10 @@ app.use('/signup', signUpRouter);
 app.use(auth);
 app.use('/users', usersRouter);
 app.use('/movies', moviesRouter);
-// app.use('/', notFoundRouter);
+app.use('/', notFoundRouter);
 app.use(errorLogger);
-// app.use(errors());
-// app.use(handleErrors);
+app.use(errors());
+app.use(handleErrors);
 
 app.listen(PORT, () => {
   console.log(`App listening on port ${PORT}`);

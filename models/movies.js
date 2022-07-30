@@ -13,10 +13,6 @@ const movieSchema = new mongoose.Schema({
     minlength: 2,
     maxlength: 30,
   },
-  movieID: {
-    type: mongoose.Schema.Types.ObjectId,
-    required: true,
-  },
   owner: {
     type: mongoose.Schema.Types.ObjectId,
     ref: 'user',

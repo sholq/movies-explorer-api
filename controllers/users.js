@@ -11,9 +11,9 @@ module.exports.getUsers = (req, res, next) => {
 };
 
 module.exports.updateProfile = (req, res, next) => {
-  const { name = false, about = false } = req.body;
+  const { name = false, email = false } = req.body;
 
-  User.findByIdAndUpdate(req.user._id, { name, about }, { new: true, runValidators: true })
+  User.findByIdAndUpdate(req.user._id, { name, email }, { new: true, runValidators: true })
     .then((user) => {
       res.send(user);
     })
