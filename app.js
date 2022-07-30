@@ -15,8 +15,8 @@ mongoose.connect('mongodb://localhost:27017/bitfilmsdb');
 mongoose.connection.on('connected', () => console.log('Connected'));
 mongoose.connection.on('error', (err) => console.log('Connection failed with - ', err));
 
-// const { usersRouter } = require('./routes/users');
-// const { cardsRouter } = require('./routes/cards');
+const { usersRouter } = require('./routes/users');
+const { moviesRouter } = require('./routes/movies');
 // const { notFoundRouter } = require('./routes/not_found');
 
 // const { createUser, login } = require('./controllers/auth');
@@ -63,8 +63,8 @@ app.use(limiter);
 //   }),
 // }), createUser);
 // app.use(auth);
-// app.use('/users', usersRouter);
-// app.use('/cards', cardsRouter);
+app.use('/users', usersRouter);
+app.use('/movies', moviesRouter);
 // app.use('/', notFoundRouter);
 app.use(errorLogger);
 // app.use(errors());
