@@ -25,7 +25,7 @@ mongoose.connection.on('error', (err) => console.log('Connection failed with - '
 // const { handleErrors } = require('./middlewares/errors');
 // const cors = require('./middlewares/cors');
 
-const { urlRegEx } = require('./regex/regex');
+// const { urlRegEx } = require('./regex/regex');
 
 const { requestLogger, errorLogger } = require('./middlewares/logger');
 
