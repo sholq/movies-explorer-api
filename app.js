@@ -23,7 +23,7 @@ const { notFoundRouter } = require('./routes/not_found');
 
 const auth = require('./middlewares/auth');
 const { handleErrors } = require('./middlewares/errors');
-// const cors = require('./middlewares/cors');
+const cors = require('./middlewares/cors');
 
 const { requestLogger, errorLogger } = require('./middlewares/logger');
 
@@ -44,7 +44,7 @@ app.use((req, res, next) => {
 });
 app.use(requestLogger);
 app.use(limiter);
-// app.use(cors);
+app.use(cors);
 app.use('/signin', signInRouter);
 app.use('/signup', signUpRouter);
 app.use(auth);
