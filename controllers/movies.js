@@ -65,7 +65,7 @@ module.exports.deleteMovie = (req, res, next) => {
       if (String(movie.owner._id) === req.user._id) {
         return Movie.findByIdAndRemove(req.params.movieId);
       }
-      return next(new AccessError('Ошибка доступа'));
+      throw new AccessError('Ошибка доступа');
     })
     .then((movie) => {
       res.send(movie);
