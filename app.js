@@ -7,24 +7,17 @@ const { errors } = require('celebrate');
 
 require('dotenv').config();
 
-const { PORT = 3000 } = process.env;
+const { PORT = 3000, NODE_ENV } = process.env;
 
 const app = express();
 
-mongoose.connect('mongodb://localhost:27017/bitfilmsdb');
+mongoose.connect(`mongodb://localhost:27017/${NODE_ENV === 'production' ? 'moviesdb' : 'bitfilmsdb'}`);
 mongoose.connection.on('connected', () => console.log('Connected'));
 mongoose.connection.on('error', (err) => console.log('Connection failed with - ', err));
 
-const { usersRouter } = require('./routes/users');
-const { moviesRouter } = require('./routes/movies');
-const { signInRouter } = require('./routes/signin');
-const { signUpRouter } = require('./routes/signup');
-const { notFoundRouter } = require('./routes/not_found');
+const { routes } = require('./routes');
 
-const auth = require('./middlewares/auth');
 const { handleErrors } = require('./middlewares/errors');
-const cors = require('./middlewares/cors');
-
 const { requestLogger, errorLogger } = require('./middlewares/logger');
 
 const limiter = rateLimit({
@@ -44,13 +37,7 @@ app.use((req, res, next) => {
 });
 app.use(requestLogger);
 app.use(limiter);
-app.use(cors);
-app.use('/signin', signInRouter);
-app.use('/signup', signUpRouter);
-app.use(auth);
-app.use('/users', usersRouter);
-app.use('/movies', moviesRouter);
-app.use('/', notFoundRouter);
+app.use(routes);
 app.use(errorLogger);
 app.use(errors());
 app.use(handleErrors);
