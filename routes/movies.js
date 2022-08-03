@@ -1,4 +1,5 @@
-const { validator, celebrate, Joi } = require('celebrate');
+const { celebrate, Joi } = require('celebrate');
+const validator = require('validator');
 
 const moviesRouter = require('express').Router();
 
