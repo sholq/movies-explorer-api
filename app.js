@@ -1,32 +1,27 @@
 const express = require('express');
 const mongoose = require('mongoose');
 const bodyParser = require('body-parser');
-const rateLimit = require('express-rate-limit');
 const helmet = require('helmet');
 const { errors } = require('celebrate');
 
 require('dotenv').config();
 
-const { PORT = 3000, NODE_ENV } = process.env;
+const { PORT = 3000, NODE_ENV, PRODUCTION_DB } = process.env;
 
 const app = express();
 
-mongoose.connect(`mongodb://localhost:27017/${NODE_ENV === 'production' ? 'moviesdb' : 'bitfilmsdb'}`);
-mongoose.connection.on('connected', () => console.log('Connected'));
-mongoose.connection.on('error', (err) => console.log('Connection failed with - ', err));
+mongoose.connect(NODE_ENV === 'production' ? PRODUCTION_DB : 'mongodb://localhost:27017/bitfilmsdb')
+  .then(() => console.log('Connected'))
+  .catch((err) => console.log('Connection failed with - ', err));
 
 const { routes } = require('./routes');
 
 const { handleErrors } = require('./middlewares/errors');
 const { requestLogger, errorLogger } = require('./middlewares/logger');
+const { limiter } = require('./middlewares/limiter');
 
-const limiter = rateLimit({
-  windowMs: 15 * 60 * 1000,
-  max: 100,
-  standardHeaders: true,
-  legacyHeaders: false,
-});
-
+app.use(requestLogger);
+app.use(limiter);
 app.use(helmet());
 app.use(bodyParser.json());
 app.use(bodyParser.urlencoded({ extended: true }));
@@ -35,8 +30,6 @@ app.use((req, res, next) => {
   console.log('Запрос залогирован!');
   next();
 });
-app.use(requestLogger);
-app.use(limiter);
 app.use(routes);
 app.use(errorLogger);
 app.use(errors());
